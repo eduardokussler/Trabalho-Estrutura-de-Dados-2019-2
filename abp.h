@@ -20,4 +20,5 @@ void Central(pNodoA *a);
 pNodoA* consultaABP(pNodoA *a, char palavra[tamMax]);
 pNodoA* consultaABP2(pNodoA *a, char palavra[tamMax]);
 int altura(pNodoA *a);
+int fator(pNodoA *a);
 

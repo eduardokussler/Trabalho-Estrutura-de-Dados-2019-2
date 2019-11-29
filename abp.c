@@ -103,3 +103,7 @@ int altura(pNodoA* a){
         return 0;
     }
 }
+
+int fator(pNodoA* a){
+    return (altura(a->esq)-altura(a->dir));
+}
