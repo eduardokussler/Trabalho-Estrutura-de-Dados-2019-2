@@ -22,3 +22,10 @@ pNodoA* consultaABP2(pNodoA *a, char palavra[tamMax]);
 int altura(pNodoA *a);
 int fator(pNodoA *a);
 
+int contaNodos(pNodoA *a);
+
+int frequencia(pNodoA *a, char* palavra);
+
+
+int contador(pNodoA *a, int k1, int k2);
+

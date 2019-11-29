@@ -67,7 +67,7 @@ pNodoA* consultaABP(pNodoA *a, char palavra[tamMax]) {
           if (strcmp(a->palavra, palavra) == 0)
              return a; //achou ent�o retorna o ponteiro para o nodo
           else
-            if (strcmp(a->palavra, palavra) < 0)
+            if (strcmp(a->palavra, palavra) > 0)
                a = a->esq;
             else
                a = a->dir;
@@ -106,4 +106,31 @@ int altura(pNodoA* a){
 
 int fator(pNodoA* a){
     return (altura(a->esq)-altura(a->dir));
+}
+
+int contaNodos(pNodoA *a){
+    if(a != NULL){
+        return 1 + contaNodos(a->dir) + contaNodos(a->esq);
+    }else{
+        return 0;
+    }
+}
+
+
+int frequencia(pNodoA *a, char* palavra){
+    if(a == NULL){
+        return -1;
+    }else{
+        if(strcmp(a->palavra, palavra) == 0){
+            return a->frequencia;
+        }else if(strcmp(a->palavra, palavra) > 0){
+            return frequencia(a->esq, palavra);
+        }else{
+            return frequencia(a->dir, palavra);
+        }
+    }
+}
+
+int contador(pNodoA *a, int k1, int k2){
+
 }
