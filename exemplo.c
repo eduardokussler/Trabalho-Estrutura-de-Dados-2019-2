@@ -2,18 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <time.h>
 
 
 /* Exemplo de uso dos argumentos para main
-O programa lê um arquivo texto como entrada e gera um arquivo como saída com o conteúdo do arquivo de entrada convertido para letras maiúsculas
+O programa lï¿½ um arquivo texto como entrada e gera um arquivo como saï¿½da com o conteï¿½do do arquivo de entrada convertido para letras maiï¿½sculas
 Para chamar, digite "exemplo entrada.txt saida.txt" */
 
 
 
 
-int main(int argc, char *argv[]) //argc conta o número de parâmetros e argv armazena as strings correspondentes aos parâmentros digitados
+int main(int argc, char *argv[]) //argc conta o nï¿½mero de parï¿½metros e argv armazena as strings correspondentes aos parï¿½mentros digitados
 {
-
+    
     setlocale(LC_ALL,""); //para imprimir corretamente na tela os caracteres acentuados
 
 
@@ -23,16 +24,16 @@ int main(int argc, char *argv[]) //argc conta o número de parâmetros e argv arma
     char *palavra, linha[1000]; // linhas a serem lidas do arquivo
     char separador[]= {" ,.&*%\?!;/-'@\"$#=><()][}{:\n\t"};
 
-    if (argc!=3)  //o numero de parametros esperado é 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arq de saida(argv[2])
+    if (argc!=3)  //o numero de parametros esperado ï¿½ 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arq de saida(argv[2])
     {
-        printf ("Número incorreto de parâmetros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
+        printf ("Nï¿½mero incorreto de parï¿½metros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
         return 1;
     }
     else
     {
 
-        entrada = fopen (argv[1], "r"); // abre o arquivo para leitura -- argv[1] é o primeiro parâmetro após o nome do arquivo.
-        if (entrada == NULL) //se não conseguiu abrir o arquivo
+        entrada = fopen (argv[1], "r"); // abre o arquivo para leitura -- argv[1] ï¿½ o primeiro parï¿½metro apï¿½s o nome do arquivo.
+        if (entrada == NULL) //se nï¿½o conseguiu abrir o arquivo
         {
             printf ("Erro ao abrir o arquivo %s",argv[1]);
             return 1;
@@ -40,15 +41,15 @@ int main(int argc, char *argv[]) //argc conta o número de parâmetros e argv arma
         else // arquivo de entrada OK
 
         {
-            saida = fopen (argv[2], "w"); // abre o arquivo para saida -- argv[2] é o segundo parâmetro após o nome do arquivo.
+            saida = fopen (argv[2], "w"); // abre o arquivo para saida -- argv[2] ï¿½ o segundo parï¿½metro apï¿½s o nome do arquivo.
 
             //percorre todo o arquivo lendo linha por linha
             while (fgets(linha,1000,entrada))
             {
-                palavra = strtok (linha, separador); //considera qquer caractere não alfabético como separador
+                palavra = strtok (linha, separador); //considera qquer caractere nï¿½o alfabï¿½tico como separador
                 while (palavra != NULL)
                 {
-                    fprintf(saida,"%s ", strlwr(palavra)); //strlwr é a função que converte palavras para minúsculo
+                    fprintf(saida,"%s ", strlwr(palavra)); //strlwr ï¿½ a funï¿½ï¿½o que converte palavras para minï¿½sculo
                     palavra = strtok (NULL, separador);
                 }
             }
