@@ -51,6 +51,15 @@ void Central(pNodoA *a)
           Central(a->esq);
       }
 }
+void CentralArq(pNodoA *a, FILE *arq)
+{
+     if (a!= NULL)
+     {
+          CentralArq(a->dir, arq);
+          fprintf(arq, "%s\n",a->palavra);
+          CentralArq(a->esq, arq);
+      }
+}
 
 void posFixado(pNodoA *a)
 {
@@ -134,13 +143,17 @@ int contaNodos(pNodoA *a){
 //dada uma palavra, retorna quantas vezes ela apareceu no texto
 int frequencia(pNodoA *a, char* palavra){
     if(a == NULL){
+        comparacoes++;
         return -1;
     }else{
         if(strcmp(a->palavra, palavra) == 0){
+            comparacoes++;
             return a->frequencia;
         }else if(strcmp(a->palavra, palavra) > 0){
+            comparacoes++;
             return frequencia(a->esq, palavra);
         }else{
+            comparacoes++;
             return frequencia(a->dir, palavra);
         }
     }
@@ -151,6 +164,7 @@ pNodoA* InsereArvoreFreq(pNodoA *src, pNodoA* dest)
 {
      if (dest == NULL)
      {
+         comparacoes++;
          dest =  (pNodoA*) malloc(sizeof(pNodoA));
          strcpy(dest->palavra, src->palavra);
          dest->esq = NULL;
@@ -160,11 +174,14 @@ pNodoA* InsereArvoreFreq(pNodoA *src, pNodoA* dest)
      }
      else
           if (src->frequencia < dest->frequencia){
+              comparacoes++;
               dest->esq = InsereArvoreFreq(src,dest->esq);
           }
           else if (src->frequencia > dest->frequencia){
+              comparacoes++;
               dest->dir = InsereArvoreFreq(src, dest->dir);
           }else{
+              comparacoes++;
               if(strcmp(src->palavra, dest->palavra) < 0){
                   dest->esq = InsereArvoreFreq(src, dest->esq);
               }else{
@@ -189,13 +206,13 @@ pNodoA* copiaArvore(pNodoA *a, pNodoA *nova, int k1, int k2){
 }
 
 //dados dois valores, procura na arvore todas palavras que tenham frequencia entre k1 e k2
-void contador(pNodoA *a, int k1, int k2){
+void contador(pNodoA *a, int k1, int k2, FILE *arq){
     pNodoA* arvAux = NULL;
     if(k2 < k1){
-        printf("Intervalo Inválido. k1 deve ser menor ou igual a k2");
+        fprintf(arq, "Intervalo Inválido. k1 deve ser menor ou igual a k2");
     }else{
         arvAux = copiaArvore(a,arvAux, k1, k2);
 
-        Central(arvAux);
+        CentralArq(arvAux, arq);
     }
 }

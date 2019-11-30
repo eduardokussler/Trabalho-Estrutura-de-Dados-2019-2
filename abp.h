@@ -17,6 +17,7 @@ pNodoA* InsereArvore(pNodoA *a, char palavra[tamMax] );
 void preFixado(pNodoA *a);
 void posFixado(pNodoA *a);
 void Central(pNodoA *a);
+void CentralArq(pNodoA *a, FILE *arq);
 pNodoA* consultaABP(pNodoA *a, char palavra[tamMax]);
 pNodoA* consultaABP2(pNodoA *a, char palavra[tamMax]);
 int altura(pNodoA *a);
@@ -27,5 +28,5 @@ int contaNodos(pNodoA *a);
 int frequencia(pNodoA *a, char* palavra);
 
 void destroi(pNodoA *a);
-void contador(pNodoA *a, int k1, int k2);
+void contador(pNodoA *a, int k1, int k2, FILE* arq);
 
