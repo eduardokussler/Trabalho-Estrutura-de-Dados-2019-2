@@ -20,12 +20,16 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
 
 
     FILE * entrada;
+    FILE  *operacoes;
     FILE * saida;
-
+    int parametros[2] = {0};
     char *palavra, linha[1000]; // linhas a serem lidas do arquivo
     char separador[]= {" ,.&*%\?!;/-'@\"$#=><()][}{:\n\t"};
-
-    if (argc!=3)  //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arq de saida(argv[2])
+    pNodoA *arvore = NULL;
+    time_t inicio; //armazena o tempo de quando o programa começou a rodar
+    time_t final; //armazena o tempo de quando o programa terminou
+    time(&inicio);
+    if (argc!=4)  //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arquivo de operações(argv[2]),nome do arq de saida(argv[3])
     {
         printf ("N�mero incorreto de par�metros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
         return 1;
@@ -39,10 +43,15 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             printf ("Erro ao abrir o arquivo %s",argv[1]);
             return 1;
         }
+        operacoes = fopen(argv[2], "r");
+        if(operacoes == NULL){
+            printf("Erro ao abrir o arquivo de operações: %s\n", argv[2]);
+            return 1;
+        }
         else // arquivo de entrada OK
 
         {
-            saida = fopen (argv[2], "w"); // abre o arquivo para saida -- argv[2] � o segundo par�metro ap�s o nome do arquivo.
+            saida = fopen (argv[3], "w"); // abre o arquivo para saida -- argv[2] � o segundo par�metro ap�s o nome do arquivo.
 
             //percorre todo o arquivo lendo linha por linha
             while (fgets(linha,1000,entrada))
@@ -50,14 +59,32 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
                 palavra = strtok (linha, separador); //considera qquer caractere n�o alfab�tico como separador
                 while (palavra != NULL)
                 {
-                    fprintf(saida,"%s ", strlwr(palavra)); //strlwr � a fun��o que converte palavras para min�sculo
+                    //fprintf(saida,"%s ", strlwr(palavra)); //strlwr � a fun��o que converte palavras para min�sculo
+                    arvore = InsereArvore(arvore, strlwr(palavra));
                     palavra = strtok (NULL, separador);
                 }
-            }
 
-            printf("\nArquivo %s gerado com sucesso.\n",argv[2]);
+            }
+            while(fgets(linha, 1000, operacoes)){
+                palavra = strtok(linha, separador);
+                if(strcmp(strlwr(palavra), "c") == 0){
+                    //le os parametros da funcao contador
+                    parametros[0] = atoi(strtok(NULL, separador));
+                    parametros[1] = atoi(strtok(NULL, separador)); 
+                    contador(arvore, parametros[0], parametros[1]);
+                }else if(strcmp(strlwr(palavra), "f") == 0){
+                    //le a palavra que servira de parametro pra funcao frequencia
+                    palavra = strtok(NULL, separador);
+                    printf("%d\n",frequencia(arvore, palavra));
+                }
+            }
+            printf("\nArquivo %s gerado com sucesso.\n",argv[3]);
+            time(&final);
+            printf("%f\n", difftime(inicio,final));
+            destroi(arvore);
         }
         fclose (entrada); //fecha os arquivos
+        fclose(operacoes);
         fclose (saida);
         return 0;
     }

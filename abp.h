@@ -26,6 +26,6 @@ int contaNodos(pNodoA *a);
 
 int frequencia(pNodoA *a, char* palavra);
 
-
-int contador(pNodoA *a, int k1, int k2);
+void destroi(pNodoA *a);
+void contador(pNodoA *a, int k1, int k2);
 

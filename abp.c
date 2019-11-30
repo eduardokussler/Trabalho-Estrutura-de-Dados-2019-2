@@ -15,6 +15,7 @@ pNodoA* InsereArvore(pNodoA *a, char palavra[tamMax])
          strcpy(a->palavra, palavra);
          a->esq = NULL;
          a->dir = NULL;
+         a->frequencia = 1;
          return a;
      }
      else
@@ -45,9 +46,9 @@ void Central(pNodoA *a)
 {
      if (a!= NULL)
      {
-          Central(a->esq);
-          printf("%s\n",a->palavra);
           Central(a->dir);
+          printf("%s\n",a->palavra);
+          Central(a->esq);
       }
 }
 
@@ -59,6 +60,20 @@ void posFixado(pNodoA *a)
           posFixado(a->dir);
           printf("%s\n",a->palavra);
       }
+}
+
+//desaloca a memoria usada pela arvore
+void destroi(pNodoA *a){
+    pNodoA *dir = NULL;
+    pNodoA *esq = NULL;
+    if(a != NULL){
+        dir = a->dir;
+        esq = a->esq;
+        free(a);
+        destroi(dir);
+        destroi(esq);
+    }
+
 }
 
 pNodoA* consultaABP(pNodoA *a, char palavra[tamMax]) {
@@ -103,11 +118,11 @@ int altura(pNodoA* a){
         return 0;
     }
 }
-
-int fator(pNodoA* a){
+//calcula o fator de uma subarvore
+int fator(pNodoA* a){ 
     return (altura(a->esq)-altura(a->dir));
 }
-
+//conta o total de nodos da arvore
 int contaNodos(pNodoA *a){
     if(a != NULL){
         return 1 + contaNodos(a->dir) + contaNodos(a->esq);
@@ -116,7 +131,7 @@ int contaNodos(pNodoA *a){
     }
 }
 
-
+//dada uma palavra, retorna quantas vezes ela apareceu no texto
 int frequencia(pNodoA *a, char* palavra){
     if(a == NULL){
         return -1;
@@ -131,6 +146,56 @@ int frequencia(pNodoA *a, char* palavra){
     }
 }
 
-int contador(pNodoA *a, int k1, int k2){
+//insere na arvore porem usa a frequencia como parametro
+pNodoA* InsereArvoreFreq(pNodoA *src, pNodoA* dest)
+{
+     if (dest == NULL)
+     {
+         dest =  (pNodoA*) malloc(sizeof(pNodoA));
+         strcpy(dest->palavra, src->palavra);
+         dest->esq = NULL;
+         dest->dir = NULL;
+         dest->frequencia = src->frequencia;
+         return dest;
+     }
+     else
+          if (src->frequencia < dest->frequencia){
+              dest->esq = InsereArvoreFreq(src,dest->esq);
+          }
+          else if (src->frequencia > dest->frequencia){
+              dest->dir = InsereArvoreFreq(src, dest->dir);
+          }else{
+              if(strcmp(src->palavra, dest->palavra) < 0){
+                  dest->esq = InsereArvoreFreq(src, dest->esq);
+              }else{
+                  dest->dir = InsereArvoreFreq(src, dest->dir);
+              }
+             
+          }
+     return dest;
+}
+//insere todos os elementos da arvore de entrada, na arvore de saída, porém
+//usa a frequencia como parâmetro para ordenar a abp
+pNodoA* copiaArvore(pNodoA *a, pNodoA *nova, int k1, int k2){
+    if(a != NULL){
+        if(a->frequencia >= k1 && a->frequencia <= k2){
+            nova = InsereArvoreFreq(a, nova);
+        }
+        nova = copiaArvore(a->esq,nova, k1, k2);
+        nova = copiaArvore(a->dir, nova, k1, k2);   
+        return nova;
+    }
+    return nova;
+}
 
+//dados dois valores, procura na arvore todas palavras que tenham frequencia entre k1 e k2
+void contador(pNodoA *a, int k1, int k2){
+    pNodoA* arvAux = NULL;
+    if(k2 < k1){
+        printf("Intervalo Inválido. k1 deve ser menor ou igual a k2");
+    }else{
+        arvAux = copiaArvore(a,arvAux, k1, k2);
+
+        Central(arvAux);
+    }
 }
