@@ -5,6 +5,7 @@
 #include <time.h>
 #include "abp.h"
 
+#define conversaoClocksMs 1000
 #define numMax 9
 /* Exemplo de uso dos argumentos para main
 O programa l� um arquivo texto como entrada e gera um arquivo como sa�da com o conte�do do arquivo de entrada convertido para letras mai�sculas
@@ -27,10 +28,12 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
     char *palavra, linha[1000]; // linhas a serem lidas do arquivo
     char separador[]= {" ,.&*%\?!;/-'@\"$#=><()][}{:\n\t"};
     pNodoA *arvore = NULL;
-    time_t inicio;//armazena o tempo de quando o programa começou a rodar
-    time_t final; //armazena o tempo de quando o programa terminou de rodar
+    clock_t inicio, final;
+    //time_t inicio;//armazena o tempo de quando o programa começou a rodar
+    //time_t final; //armazena o tempo de quando o programa terminou de rodar
+    double tempo = 0;
     char astericos[] = {"**************************\n"};
-    //gettimeofday(&inicio, NULL);
+    inicio = clock();
     if (argc!=4)  //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arquivo de operações(argv[2]),nome do arq de saida(argv[3])
     {
         printf ("N�mero incorreto de par�metros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
@@ -58,11 +61,11 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             //percorre todo o arquivo lendo linha por linha
 
             comparacoes = 0; //zera as comparações
-            
+            //inicio = time(&inicio);
 
             while (fgets(linha,1000,entrada))
             {
-                inicio = time(&inicio);
+                
                 palavra = strtok (linha, separador); //considera qquer caractere n�o alfab�tico como separador
                 while (palavra != NULL)
                 {
@@ -77,8 +80,13 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             fprintf(saida, "Número de Comparações: %d\n", comparacoes); //coloca as estatisticas do carregamento da estrutura no arquivo de saida
             fprintf(saida,"A altura da arvore é: %d\n", altura(arvore));
             fprintf(saida,"O Fator da arvore é de: %d\n", fator(arvore));
-            final = time(&final);
-            fprintf(saida,"Tempo: %fs\n", difftime(final, inicio));
+            //final = time(&final);
+            //tempo = difftime(final, inicio);
+            //tempo *= 1000;
+            final = clock();
+            tempo = (final - inicio) * CLK_TCK;
+            tempo /= conversaoClocksMs;
+            fprintf(saida,"Tempo: %.6fms\n", tempo);
             fprintf(saida,"O numero de rotações necessário foi 0\n"); //como é ABP nao tem rotações
             fprintf(saida,"O numero total de nodos foi: %d\n", contaNodos(arvore));
             fprintf(saida, "\n\n");
@@ -114,8 +122,13 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
                 fprintf(saida, astericos);
             }
             printf("\nArquivo %s gerado com sucesso.\n",argv[3]);
-            final = time(&final);
-            fprintf(saida, "Tempo: %fs\n", difftime(final,inicio));
+            //final = time(&final);
+            //tempo = difftime(final, inicio);
+            //tempo *= 1000;
+            final = clock();
+            tempo = (final - inicio) * CLK_TCK;
+            tempo /= conversaoClocksMs;
+            fprintf(saida, "Tempo: %.6fms\n", tempo);
             destroi(arvore);
             
         }
