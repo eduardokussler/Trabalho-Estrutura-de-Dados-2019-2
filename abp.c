@@ -56,7 +56,7 @@ void CentralArq(pNodoA *a, FILE *arq)
      if (a!= NULL)
      {
           CentralArq(a->dir, arq);
-          fprintf(arq, "%s\n",a->palavra);
+          fprintf(arq, "%s %d\n",a->palavra, a->frequencia);
           CentralArq(a->esq, arq);
       }
 }
@@ -144,7 +144,7 @@ int contaNodos(pNodoA *a){
 int frequencia(pNodoA *a, char* palavra){
     if(a == NULL){
         comparacoes++;
-        return -1;
+        return 0;
     }else{
         if(strcmp(a->palavra, palavra) == 0){
             comparacoes++;
@@ -209,7 +209,7 @@ pNodoA* copiaArvore(pNodoA *a, pNodoA *nova, int k1, int k2){
 void contador(pNodoA *a, int k1, int k2, FILE *arq){
     pNodoA* arvAux = NULL;
     if(k2 < k1){
-        fprintf(arq, "Intervalo Inválido. k1 deve ser menor ou igual a k2");
+        fprintf(arq, "Intervalo Inválido. k1 deve ser menor ou igual a k2\n");
     }else{
         arvAux = copiaArvore(a,arvAux, k1, k2);
 

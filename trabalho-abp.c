@@ -27,13 +27,10 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
     char *palavra, linha[1000]; // linhas a serem lidas do arquivo
     char separador[]= {" ,.&*%\?!;/-'@\"$#=><()][}{:\n\t"};
     pNodoA *arvore = NULL;
-    time_t inicio; //armazena o tempo de quando o programa começou a rodar
-    time_t inicioOp; //armazena o tempo de quando uma operação começou
-    time_t finalOp; //aramzena o tempo em que uma determinada operação terminou
-    time_t final; //armazena o tempo de quando o programa terminou
+    time_t inicio;//armazena o tempo de quando o programa começou a rodar
+    time_t final; //armazena o tempo de quando o programa terminou de rodar
     char astericos[] = {"**************************\n"};
-    char numTemp [numMax] = {'\0'};
-    time(&inicio);
+    //gettimeofday(&inicio, NULL);
     if (argc!=4)  //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arquivo de operações(argv[2]),nome do arq de saida(argv[3])
     {
         printf ("N�mero incorreto de par�metros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
@@ -61,9 +58,11 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             //percorre todo o arquivo lendo linha por linha
 
             comparacoes = 0; //zera as comparações
-            time(&inicioOp);
+            
+
             while (fgets(linha,1000,entrada))
             {
+                inicio = time(&inicio);
                 palavra = strtok (linha, separador); //considera qquer caractere n�o alfab�tico como separador
                 while (palavra != NULL)
                 {
@@ -73,13 +72,13 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
                 }
                 
             }
-            time(&finalOp);
+            
             fprintf(saida, "***************** Estatísticas Estutura Carregada *****************\n");
             fprintf(saida, "Número de Comparações: %d\n", comparacoes); //coloca as estatisticas do carregamento da estrutura no arquivo de saida
-            time(&final);
-            fprintf(saida, "Tempo decorrido para inserção: %f\n", difftime(finalOp, inicioOp));
             fprintf(saida,"A altura da arvore é: %d\n", altura(arvore));
             fprintf(saida,"O Fator da arvore é de: %d\n", fator(arvore));
+            final = time(&final);
+            fprintf(saida,"Tempo: %fs\n", difftime(final, inicio));
             fprintf(saida,"O numero de rotações necessário foi 0\n"); //como é ABP nao tem rotações
             fprintf(saida,"O numero total de nodos foi: %d\n", contaNodos(arvore));
             fprintf(saida, "\n\n");
@@ -87,39 +86,36 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
 
             while(fgets(linha, 1000, operacoes)){
                 comparacoes = 0; //zera as comparacoes para contar a da proxima operação
+                parametros[0] = 0;
+                parametros[1] = 0;
                 palavra = strtok(linha, separador);
+                
                 if(strcmp(strlwr(palavra), "c") == 0){
                     //le os parametros da funcao contador
                     fprintf(saida, "C ");
                     parametros[0] = atoi(strtok(NULL, separador));
-                    parametros[1] = atoi(strtok(NULL, separador)); 
-                    fprintf(saida, "%d %d \n");
+                    parametros[1] = atoi(strtok(NULL, separador));
+                    fprintf(saida, "%d %d \n", parametros[0],parametros[1]);
                     contador(arvore, parametros[0], parametros[1], saida);
                     fprintf(saida, "Comparações: %li\n", comparacoes);
+                    fprintf(saida,"\n");
                 }else if(strcmp(strlwr(palavra), "f") == 0){
                     //le a palavra que servira de parametro pra funcao frequencia
                     palavra = strtok(NULL, separador);
                     freq = frequencia(arvore, palavra);
-                    if(freq == -1){
-                        fprintf(saida, "F ");
-                        fprintf(saida, palavra);
-                        fprintf(saida, "\n");
-                        fprintf(saida, "Comparações: %li\n", comparacoes);
-                        fprintf(saida, "A palavra %s não existe no arquivo de entrada\n", palavra);
-                        
-                    }else{
-                        fprintf(saida, "F ");
-                        fprintf(saida, palavra);
-                        fprintf(saida, "\n");
-                        fprintf(saida, "A palavra %s aparece %d vezes no arquivo.\n", palavra, freq);
-                        fprintf(saida, "Comparações: %li\n", comparacoes);
-                    }
+                    fprintf(saida, "F ");
+                    fprintf(saida, palavra);
+                    fprintf(saida, "\n");
+                    fprintf(saida, "%s: %d ocorrências.\n", palavra, freq);
+                    fprintf(saida, "Comparações: %li\n", comparacoes);
+                    fprintf(saida,"\n");
+                    
                 }
                 fprintf(saida, astericos);
             }
             printf("\nArquivo %s gerado com sucesso.\n",argv[3]);
-            time(&final);
-            fprintf(saida, "%f\n", difftime(final,inicio));
+            final = time(&final);
+            fprintf(saida, "Tempo: %fs\n", difftime(final,inicio));
             destroi(arvore);
             
         }
