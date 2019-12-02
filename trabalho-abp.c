@@ -13,10 +13,8 @@ Para chamar, digite "exemplo entrada.txt saida.txt" */
 
 
 
-
-int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv armazena as strings correspondentes aos par�mentros digitados
-{
-
+//argc conta o n�mero de par�metros e argv armazena as strings correspondentes aos par�mentros digitados
+int main(int argc, char *argv[]) {
     setlocale(LC_ALL,""); //para imprimir corretamente na tela os caracteres acentuados
 
 
@@ -28,34 +26,29 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
     char *palavra, linha[1000]; // linhas a serem lidas do arquivo
     char separador[]= {" ,.&*%\?!;/-'@\"$#=><()][}{:\n\t"};
     pNodoA *arvore = NULL;
-    clock_t inicio, final;
+    clock_t inicio, final; //armazena o numero de clocks
     //time_t inicio;//armazena o tempo de quando o programa começou a rodar
     //time_t final; //armazena o tempo de quando o programa terminou de rodar
     double tempo = 0;
     char astericos[] = {"**************************\n"};
     inicio = clock();
-    if (argc!=4)  //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arquivo de operações(argv[2]),nome do arq de saida(argv[3])
-    {
-        printf ("N�mero incorreto de par�metros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
+    //o numero de parametros esperado � 3: nome do programa (argv[0]), nome do arq de entrada(argv[1]), nome do arquivo de operações(argv[2]),nome do arq de saida(argv[3])
+    if (argc!=4) {
+        printf ("Número incorreto de parâmetros.\n Para chamar o programa digite: exemplo <arq_entrada> <arq_saida>\n");
         return 1;
-    }
-    else
-    {
+    }else{
 
         entrada = fopen (argv[1], "r"); // abre o arquivo para leitura -- argv[1] � o primeiro par�metro ap�s o nome do arquivo.
-        if (entrada == NULL) //se n�o conseguiu abrir o arquivo
-        {
+         //se n�o conseguiu abrir o arquivo
+        if (entrada == NULL){
             printf ("Erro ao abrir o arquivo %s",argv[1]);
             return 1;
         }
         operacoes = fopen(argv[2], "r");
-        if(operacoes == NULL){
+        if(operacoes == NULL){//se não conseguiu abrir o arquivo com as operações
             printf("Erro ao abrir o arquivo de operações: %s\n", argv[2]);
             return 1;
-        }
-        else // arquivo de entrada OK
-
-        {
+        }else{// arquivo de entrada OK
             saida = fopen (argv[3], "w"); // abre o arquivo para saida -- argv[2] � o segundo par�metro ap�s o nome do arquivo.
 
             //percorre todo o arquivo lendo linha por linha
@@ -63,15 +56,13 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             comparacoes = 0; //zera as comparações
             //inicio = time(&inicio);
 
-            while (fgets(linha,1000,entrada))
-            {
-                
-                palavra = strtok (linha, separador); //considera qquer caractere n�o alfab�tico como separador
-                while (palavra != NULL)
-                {
+            while (fgets(linha,1000,entrada)){
+                //considera qquer caractere n�o alfab�tico como separador
+                palavra = strtok (linha, separador); 
+                while (palavra != NULL){
                     //fprintf(saida,"%s ", strlwr(palavra)); //strlwr � a fun��o que converte palavras para min�sculo
-                    arvore = InsereArvore(arvore, strlwr(palavra));
-                    palavra = strtok (NULL, separador);
+                    arvore = InsereArvore(arvore, strlwr(palavra));//coloca a palavra lida para minusculas e insere na arvore
+                    palavra = strtok (NULL, separador);// separa a proxima palavra
                 }
                 
             }
@@ -83,34 +74,36 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
             //final = time(&final);
             //tempo = difftime(final, inicio);
             //tempo *= 1000;
+            //calcula o tempo decorrido desde o início do programa;
             final = clock();
-            tempo = (final - inicio) * CLK_TCK;
+            tempo = (final - inicio) * CLK_TCK; //clk_tck é uma constante com o numero de clocks por segundo
             tempo /= conversaoClocksMs;
             fprintf(saida,"Tempo: %.6fms\n", tempo);
-            fprintf(saida,"O numero de rotações necessário foi 0\n"); //como é ABP nao tem rotações
+            fprintf(saida,"O numero de rotações necessário foi: 0\n"); //como é ABP nao tem rotações
             fprintf(saida,"O numero total de nodos foi: %d\n", contaNodos(arvore));
             fprintf(saida, "\n\n");
             fprintf(saida, "***************** Estatísticas Operações *****************\n");
 
-            while(fgets(linha, 1000, operacoes)){
+            while(fgets(linha, 1000, operacoes)){ //le uma linha do arquivo de operacoes
                 comparacoes = 0; //zera as comparacoes para contar a da proxima operação
                 parametros[0] = 0;
                 parametros[1] = 0;
                 palavra = strtok(linha, separador);
                 
-                if(strcmp(strlwr(palavra), "c") == 0){
+                if(strcmp(strlwr(palavra), "c") == 0){ //testa se a operacao é contador
                     //le os parametros da funcao contador
                     fprintf(saida, "C ");
-                    parametros[0] = atoi(strtok(NULL, separador));
-                    parametros[1] = atoi(strtok(NULL, separador));
-                    fprintf(saida, "%d %d \n", parametros[0],parametros[1]);
+                    parametros[0] = atoi(strtok(NULL, separador)); //le o primeiro parametro, limite inferior
+                    parametros[1] = atoi(strtok(NULL, separador)); //le o segundo parametro, limite superior
+                    fprintf(saida, "%d %d \n", parametros[0],parametros[1]);//escreve os limites usados no arquivo de saída
                     contador(arvore, parametros[0], parametros[1], saida);
-                    fprintf(saida, "Comparações: %li\n", comparacoes);
+                    fprintf(saida, "Comparações: %li\n", comparacoes);//imprime o numero de comparaçoes no arquivo de saida
                     fprintf(saida,"\n");
-                }else if(strcmp(strlwr(palavra), "f") == 0){
+                }else if(strcmp(strlwr(palavra), "f") == 0){//testa se a operacao é frequencia
                     //le a palavra que servira de parametro pra funcao frequencia
-                    palavra = strtok(NULL, separador);
+                    palavra = strtok(NULL, separador); //busca a palavra que é o parâmetro da função
                     freq = frequencia(arvore, palavra);
+                    //imprime as informações no arquivo
                     fprintf(saida, "F ");
                     fprintf(saida, palavra);
                     fprintf(saida, "\n");
@@ -119,17 +112,18 @@ int main(int argc, char *argv[]) //argc conta o n�mero de par�metros e argv 
                     fprintf(saida,"\n");
                     
                 }
-                fprintf(saida, astericos);
+                fprintf(saida, astericos);//imprime uma linha de asteriscos para indicar que uma operação foi concluída
             }
             printf("\nArquivo %s gerado com sucesso.\n",argv[3]);
             //final = time(&final);
             //tempo = difftime(final, inicio);
             //tempo *= 1000;
+            //calcula o tempo total decorrido desde o inicio do programa
             final = clock();
             tempo = (final - inicio) * CLK_TCK;
             tempo /= conversaoClocksMs;
             fprintf(saida, "Tempo: %.6fms\n", tempo);
-            destroi(arvore);
+            destroi(arvore); //desaloca a memória
             
         }
         fclose (entrada); //fecha os arquivos
