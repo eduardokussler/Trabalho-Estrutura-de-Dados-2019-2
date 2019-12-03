@@ -67,10 +67,10 @@ int main(int argc, char *argv[]) {
                 
             }
             
-            fprintf(saida, "***************** Estatísticas Estutura Carregada *****************\n");
+            fprintf(saida, "***************** Estatísticas Estutura Carregada ABP*****************\n");
             fprintf(saida, "Número de Comparações: %d\n", comparacoes); //coloca as estatisticas do carregamento da estrutura no arquivo de saida
             fprintf(saida,"A altura da arvore é: %d\n", altura(arvore));
-            fprintf(saida,"O Fator da arvore é de: %d\n", fator(arvore));
+            fprintf(saida,"O Fator da arvore é de: %d\n", fatorABP(arvore));
             //final = time(&final);
             //tempo = difftime(final, inicio);
             //tempo *= 1000;
@@ -83,9 +83,12 @@ int main(int argc, char *argv[]) {
             fprintf(saida,"O numero total de nodos foi: %d\n", contaNodos(arvore));
             fprintf(saida, "\n\n");
             fprintf(saida, "***************** Estatísticas Operações *****************\n");
-
+			
+			inicio = clock();
+			comparacoes = 0;
+			
             while(fgets(linha, 1000, operacoes)){ //le uma linha do arquivo de operacoes
-                comparacoes = 0; //zera as comparacoes para contar a da proxima operação
+                //comparacoes = 0; //zera as comparacoes para contar a da proxima operação
                 parametros[0] = 0;
                 parametros[1] = 0;
                 palavra = strtok(linha, separador);
@@ -97,7 +100,7 @@ int main(int argc, char *argv[]) {
                     parametros[1] = atoi(strtok(NULL, separador)); //le o segundo parametro, limite superior
                     fprintf(saida, "%d %d \n", parametros[0],parametros[1]);//escreve os limites usados no arquivo de saída
                     contador(arvore, parametros[0], parametros[1], saida);
-                    fprintf(saida, "Comparações: %li\n", comparacoes);//imprime o numero de comparaçoes no arquivo de saida
+                    //fprintf(saida, "Comparações: %li\n", comparacoes);//imprime o numero de comparaçoes no arquivo de saida
                     fprintf(saida,"\n");
                 }else if(strcmp(strlwr(palavra), "f") == 0){//testa se a operacao é frequencia
                     //le a palavra que servira de parametro pra funcao frequencia
@@ -108,7 +111,7 @@ int main(int argc, char *argv[]) {
                     fprintf(saida, palavra);
                     fprintf(saida, "\n");
                     fprintf(saida, "%s: %d ocorrências.\n", palavra, freq);
-                    fprintf(saida, "Comparações: %li\n", comparacoes);
+                    //fprintf(saida, "Comparações: %li\n", comparacoes);
                     fprintf(saida,"\n");
                     
                 }
@@ -123,6 +126,7 @@ int main(int argc, char *argv[]) {
             tempo = (final - inicio) * CLK_TCK;
             tempo /= conversaoClocksMs;
             fprintf(saida, "Tempo: %.6fms\n", tempo);
+			fprintf(saida, "Comparações %d\n", comparacoes);
             destroi(arvore); //desaloca a memória
             
         }

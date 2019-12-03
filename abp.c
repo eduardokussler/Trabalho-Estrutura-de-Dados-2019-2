@@ -18,12 +18,13 @@ pNodoA* InsereArvore(pNodoA *a, char palavra[tamMax]){
         a->frequencia = 1;
         return a;
     }else if (strcmp(a->palavra, palavra) > 0){ //se não, compara usando a ordem alfabetica para decidir em qual subarvore inserir
-            comparacoes++;
+            comparacoes += 2;
             a->esq = InsereArvore(a->esq,palavra);
         }else if (strcmp(a->palavra, palavra) < 0){
-            comparacoes++;
+            comparacoes += 3;
             a->dir = InsereArvore(a->dir,palavra);
         }else{//se for igual, apenas atualiza a frequencia da palavra
+			comparacoes += 3;
             a->frequencia++;
         }
     return a;
@@ -89,36 +90,6 @@ void destroi(pNodoA *a){
     }
 
 }
-//procura a palavra na arvore, retornando seu ponteiro
-pNodoA* consultaABP(pNodoA *a, char palavra[tamMax]) {
-
-    while (a!=NULL){
-        if (strcmp(a->palavra, palavra) == 0)
-            return a; //achou ent�o retorna o ponteiro para o nodo
-        else if (strcmp(a->palavra, palavra) > 0)
-               a = a->esq;
-            else
-               a = a->dir;
-    }
-    return NULL; //se n�o achou
-}
-
-pNodoA* consultaABP2(pNodoA *a, char palavra[tamMax]) {
-    if (a!=NULL) {
-
-
-       if (strcmp(a->palavra,palavra) == 0)
-         return a;
-       else
-           if (strcmp(a->palavra, palavra) > 0)
-                return consultaABP2(a->esq,palavra);
-            if (strcmp(a->palavra, palavra) < 0)
-                return consultaABP2(a->dir,palavra);
-
-            else return a;
-       }
-       else return NULL;
-}
 
 
 //calcula a altura da subarvore passada por pnodo A
@@ -133,10 +104,36 @@ int altura(pNodoA* a){
         return 0;
     }
 }
-//calcula o fator de uma subarvore
+//calcula o fator de um nodo 
 int fator(pNodoA* a){ 
     return (altura(a->esq) - altura(a->dir));
 }
+
+
+// retorna o fator de uma aabp
+int fatorABP(pNodoA *a) {
+	int fat_esq;
+	int fat_dir;
+	int fat;
+	if (a != NULL) {
+		// compara fator do nodo atual com o fator das subarvores e retorna maior
+		fat = abs(fator(a));
+		fat_esq = abs(fatorABP(a->esq));
+		fat_dir = abs(fatorABP(a->dir));
+		if (fat >= fat_esq && fat >= fat_dir) {
+			return fat;
+		} else if (fat_esq >= fat && fat_esq >= fat_dir){
+			return fat_esq;
+		} else {
+			return fat_dir;
+		}
+	} else {
+		return 0;
+	}
+}
+
+
+
 //conta o total de nodos da arvore
 int contaNodos(pNodoA *a){
     if(a != NULL){
@@ -149,17 +146,17 @@ int contaNodos(pNodoA *a){
 //dada uma palavra, retorna quantas vezes ela apareceu no texto
 int frequencia(pNodoA *a, char* palavra){
     if(a == NULL){
-        comparacoes++;
+        comparacoes += 1;
         return 0;
     }else{
         if(strcmp(a->palavra, palavra) == 0){ //achou a palavra procurada
-            comparacoes++;
+            comparacoes += 2;
             return a->frequencia;
         }else if(strcmp(a->palavra, palavra) > 0){ //está antes no alfabeto
-            comparacoes++;
+            comparacoes += 3;
             return frequencia(a->esq, palavra);
         }else{ //está depois no alfabeto
-            comparacoes++;
+            comparacoes += 3;
             return frequencia(a->dir, palavra);
         }
     }
@@ -177,13 +174,14 @@ pNodoA* InsereArvoreFreq(pNodoA *src, pNodoA* dest){
         dest->frequencia = src->frequencia;
         return dest;
     }else if (src->frequencia < dest->frequencia){ //se a frequencia for menor do que a raiz, vai pra subarvore esquerda
-            comparacoes++;
+            comparacoes += 2;
             dest->esq = InsereArvoreFreq(src,dest->esq);
         }else if (src->frequencia > dest->frequencia){
-            comparacoes++;
+            comparacoes += 3;
             dest->dir = InsereArvoreFreq(src, dest->dir); //se a frequencia for maior do que a da raiz, vai pra subarvore direita
         }else{
-            comparacoes++;
+			comparacoes += 3;
+            comparacoes++;// por causa do proximo if else 
             //se for igual, analisa a ordem alfabetica pra definir em qual subarvore inserir
             if(strcmp(src->palavra, dest->palavra) < 0){
                 dest->esq = InsereArvoreFreq(src, dest->esq);
@@ -203,12 +201,14 @@ pNodoA* copiaArvore(pNodoA *a, pNodoA *nova, int k1, int k2){
         if(a->frequencia >= k1 && a->frequencia <= k2){
             nova = InsereArvoreFreq(a, nova); 
         }
+		comparacoes++;
         //chama a funcao recursivamente para buscar todas as palavras
         //cuja frequencia esta no intervalo
         nova = copiaArvore(a->esq,nova, k1, k2);
         nova = copiaArvore(a->dir, nova, k1, k2);   
         return nova;
     }
+	comparacoes++;
     return nova;
 }
 
@@ -218,10 +218,12 @@ void contador(pNodoA *a, int k1, int k2, FILE *arq){
     if(k2 < k1){
         fprintf(arq, "Intervalo Inválido. k1 deve ser menor ou igual a k2\n");
     }else{
+		
         arvAux = copiaArvore(a,arvAux, k1, k2);
         //imprime usando o caminhamento central a esquerda para que o fique ordenada de forma
         //decrescente 
         CentralArq(arvAux, arq);
         destroi(arvAux);//desaloca a memoria usada pela arvore auxiliar
     }
+	comparacoes++;
 }

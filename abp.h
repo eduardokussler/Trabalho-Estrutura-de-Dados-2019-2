@@ -33,6 +33,9 @@ int altura(pNodoA *a);
 //Calula o fator de desbalanceamento alt_esq - alt_dir
 int fator(pNodoA *a);
 
+// retorna o fator de uma aabp
+int fatorABP(pNodoA *a);
+
 //Conta o total de nodos da arvore
 int contaNodos(pNodoA *a);
 
