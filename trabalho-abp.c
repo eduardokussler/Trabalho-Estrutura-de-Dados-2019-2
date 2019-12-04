@@ -76,8 +76,8 @@ int main(int argc, char *argv[]) {
             //tempo *= 1000;
             //calcula o tempo decorrido desde o início do programa;
             final = clock();
-            tempo = (final - inicio) * CLK_TCK; //clk_tck é uma constante com o numero de clocks por segundo
-            tempo /= conversaoClocksMs;
+            tempo = ((double)(final - inicio)) / CLOCKS_PER_SEC; //clk_per_sec é uma constante com o numero de clocks por segundo
+            tempo *= conversaoClocksMs;
             fprintf(saida,"Tempo: %.6fms\n", tempo);
             fprintf(saida,"O numero de rotações necessário foi: 0\n"); //como é ABP nao tem rotações
             fprintf(saida,"O numero total de nodos foi: %d\n", contaNodos(arvore));
@@ -123,8 +123,8 @@ int main(int argc, char *argv[]) {
             //tempo *= 1000;
             //calcula o tempo total decorrido desde o inicio do programa
             final = clock();
-            tempo = (final - inicio) * CLK_TCK;
-            tempo /= conversaoClocksMs;
+            tempo = ((double)(final - inicio)) / CLOCKS_PER_SEC;
+            tempo *= conversaoClocksMs;
             fprintf(saida, "Tempo: %.6fms\n", tempo);
 			fprintf(saida, "Comparações %d\n", comparacoes);
             destroi(arvore); //desaloca a memória
