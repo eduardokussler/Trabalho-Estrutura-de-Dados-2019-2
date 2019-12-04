@@ -183,7 +183,7 @@ pNodoA* InsereArvoreFreq(pNodoA *src, pNodoA* dest){
 			comparacoes += 3;
             comparacoes++;// por causa do proximo if else 
             //se for igual, analisa a ordem alfabetica pra definir em qual subarvore inserir
-            if(strcmp(src->palavra, dest->palavra) < 0){
+            if(strcmp(src->palavra, dest->palavra) > 0){
                 dest->esq = InsereArvoreFreq(src, dest->esq);
             }else{
                 dest->dir = InsereArvoreFreq(src, dest->dir);
