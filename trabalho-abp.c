@@ -7,15 +7,13 @@
 
 #define conversaoClocksMs 1000
 #define numMax 9
-/* Exemplo de uso dos argumentos para main
-O programa l� um arquivo texto como entrada e gera um arquivo como sa�da com o conte�do do arquivo de entrada convertido para letras mai�sculas
-Para chamar, digite "exemplo entrada.txt saida.txt" */
 
 
 
+//para chamar a main, digite: <nome do programa> <arquivo de texto de entrada> <operacoes> <arquivo de saida>
 //argc conta o n�mero de par�metros e argv armazena as strings correspondentes aos par�mentros digitados
 int main(int argc, char *argv[]) {
-    setlocale(LC_ALL,""); //para imprimir corretamente na tela os caracteres acentuados
+    setlocale(LC_ALL,"portuguese"); //para imprimir corretamente na tela os caracteres acentuados
 
 
     FILE * entrada;
